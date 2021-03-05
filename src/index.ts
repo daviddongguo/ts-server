@@ -4,7 +4,7 @@ import express, {Request, Response} from 'express';
 import router from './routes/loginRoutes';
 
 const app = express();
-const port = 3000;
+const port = 3011;
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({keys: ['']}));
