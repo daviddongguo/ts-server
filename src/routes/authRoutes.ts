@@ -1,7 +1,16 @@
-import {Request, Response, Router} from 'express';
+import {NextFunction, Request, Response, Router} from 'express';
 
 interface RequestWithBody extends Request {
 	body: {[key: string]: string | undefined};
+}
+
+function requireAuth(req: Request, res: Response, next: NextFunction): void {
+	if (req.session && req.session.isLoggedIn) {
+		next();
+		return;
+	}
+
+	res.status(403).send('Not permitted');
 }
 
 const router = Router();
@@ -46,6 +55,10 @@ router.post('/auth/login', (req: RequestWithBody, res: Response) => {
 router.get('/auth/logout', (req, res) => {
 	req.session = undefined;
 	res.redirect('/auth/');
+});
+
+router.get('/auth/protected', requireAuth, (req: Request, res: Response) => {
+	res.send('Welcome to protected route, logged in user!');
 });
 
 export default router;
